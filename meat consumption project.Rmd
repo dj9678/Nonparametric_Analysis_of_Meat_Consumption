@@ -1,0 +1,182 @@
+---
+title: "ISYE6404 Project"
+author: "Dongsuk Jeong"
+date: "2023-04-23"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Q4. Does meat consumption in Australia(or other countries) change significantly between 2022 and 2019? The reason for selecting 2019 and 2022 is because to see the difference in meat consumption before and after covid. Since this type of question asks about comparison between two different years in countries and we do not need to know anything about population distribution, we can conduct the two paired sample sign tests to find out this. Furthermore    , we will conduct the wilcox test to compare the result with sign test. 
+
+```{r}
+df = read.csv("meat_consumption_q4.csv")
+df
+```
+
+```{r}
+df_19 <- df[df$time == 2019,]
+df_22 <- df[df$time == 2022,]
+diff_year = df_22$value - df_19$value
+
+ks.test(diff_year,pnorm)
+hist(diff_year)
+```
+Since p-value from Kolmogorov-Smirnov test is 2.2e-16, we reject null hypothesis. Thus, the data does not hold normality so we can't conduct t-test. However, by histogram, we see the symmetric shape so we are able to use wilcox signed rank test.
+
+``` {r}
+wilcox.test(df_22$value, df_19$value, paired = TRUE, alternative = "greater")
+t.test(df_22$value, df_19$value, alternative = "greater", paired = TRUE)
+```
+From both test, we reject null hypothesis, which means meat consumption in 2022 is greater than meat consumption in 2019.
+
+```{r}
+location = c(rep(0:38, each=4))
+meat_type = c("BEEF", "PIG", "POULTRY", "SHEEP")
+meat_type = rep(meat_type, times=39)
+
+meat_consumption_19 = df_19$value
+meat_consumption_22 = df_22$value
+diff_consumption = meat_consumption_22 - meat_consumption_19
+
+df2 = data.frame(location, meat_type, meat_consumption_19, meat_consumption_22, diff_consumption)
+df2
+```
+
+```{r}
+library(dplyr)
+
+grouped_df <- group_by(df2, location)
+
+sum_df <- summarize(grouped_df, mean19 = mean(meat_consumption_19), mean22 = mean(meat_consumption_22), diff = mean22 - mean19)
+sum_df
+```
+
+```{r}
+options(max.print = 2000)
+
+loc = c(0:38)
+data = matrix(c(sum_df$location, sum_df$mean19, sum_df$mean22), ncol = 3, nrow=39, byrow = FALSE)
+friedman_res <- friedman.test(data)
+friedman_res
+
+#pairwise.wilcox.test(df2$diff_consumption, factor(meat_type), p.adjust.method = "bonferroni")
+```
+
+```{r}
+library(ggplot2)
+
+p <- ggplot(data = sum_df, aes(x= location,fill = diff))+geom_bar(aes(y = diff), position = "dodge", stat = "identity") 
+p
+```
+
+```{r}
+kruskal.test(diff_consumption ~ location, data = df2) 
+```
+
+```{r}
+library(ggplot2)
+
+loc = c(0:38)
+df_beef <- df2[df2$meat_type == "BEEF",]
+df_pig <- df2[df2$meat_type == "PIG",]
+df_poultry <- df2[df2$meat_type == "POULTRY",]
+df_sheep <- df2[df2$meat_type == "SHEEP",]
+
+beef = df_beef$diff_consumption
+pig = df_pig$diff_consumption
+poultry = df_poultry$diff_consumption
+sheep = df_sheep$diff_consumption
+
+grouped_meat_df <- data.frame(loc, beef, pig, poultry, sheep)
+grouped_meat_df
+
+data = matrix(c(grouped_meat_df$loc, grouped_meat_df$beef, grouped_meat_df$pig, grouped_meat_df$poultry, grouped_meat_df$sheep), ncol = 5, nrow=39, byrow = FALSE)
+friedman_res <- friedman.test(data)
+friedman_res
+
+pairwise.wilcox.test(data, factor(meat_type), p.adjust.method = "bonferroni")
+
+
+p1 = ggplot(data = df2, aes(x= meat_type,fill = meat_type)) + 
+      geom_bar(aes(y = diff_consumption), position = "dodge", stat = "identity") 
+p1
+
+p2 = ggplot(data = df2, aes(x= location,fill = meat_type)) + 
+      geom_bar(aes(y = diff_consumption), position = "dodge", stat = "identity") 
+p2
+```
+
+```{r}
+library(DescTools)
+
+kruskal.test(diff_consumption ~ factor(meat_type), data = df2) 
+DunnTest(df2$diff_consumption, factor(meat_type), method = "bonferroni")
+```
+
+```{r}
+library(dplyr)
+
+df_beef
+
+data = matrix(c(df_beef$location, df_beef$meat_consumption_19, df_beef$meat_consumption_22), ncol = 3, nrow=39, byrow = FALSE)
+friedman_res <- friedman.test(data)
+friedman_res
+
+p = ggplot(data = df_beef, aes(x= location,fill = diff_consumption)) + 
+      geom_bar(aes(y = diff_consumption), position = "dodge", stat = "identity") 
+p
+```
+
+```{r}
+library(dplyr)
+
+df_pig
+
+data = matrix(c(df_pig$location, df_pig$meat_consumption_19, df_pig$meat_consumption_22), ncol = 3, nrow=39, byrow = FALSE)
+friedman_res <- friedman.test(data)
+friedman_res
+
+p = ggplot(data = df_pig, aes(x= location,fill = diff_consumption)) + 
+      geom_bar(aes(y = diff_consumption), position = "dodge", stat = "identity") 
+p
+```
+
+```{r}
+library(dplyr)
+
+df_poultry
+
+data = matrix(c(df_poultry$location, df_poultry$meat_consumption_19, df_poultry$meat_consumption_22), ncol = 3, nrow=39, byrow = FALSE)
+friedman_res <- friedman.test(data)
+friedman_res
+
+p = ggplot(data = df_poultry, aes(x= location,fill = diff_consumption)) + 
+      geom_bar(aes(y = diff_consumption), position = "dodge", stat = "identity") 
+p
+```
+
+```{r}
+library(dplyr)
+
+df_sheep
+
+data = matrix(c(df_sheep$location, df_sheep$meat_consumption_19, df_sheep$meat_consumption_22), ncol = 3, nrow=39, byrow = FALSE)
+friedman_res <- friedman.test(data)
+friedman_res
+
+p = ggplot(data = df_sheep, aes(x= location,fill = diff_consumption)) + 
+      geom_bar(aes(y = diff_consumption), position = "dodge", stat = "identity") 
+p
+```
+
+
+
+
+
+
+
+
+
