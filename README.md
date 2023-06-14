@@ -15,7 +15,7 @@
 
 <h2>Analysis</h2>
 <p>
-  1. Difference of Meat Consumption between 2019 and 2023 Overall<br>
+  1. Difference of Meat Consumption between 2019 and 2022 Overall<br>
   • In this approach, the dataset consists of meat consumption of 2019 and meat consumption of 2022<br>
   • Conducted the Kolmogorov-Smirnov test to see if the difference of meat consumption fit to normal distribution<br>
   • The difference of meat consumption did not hold normal distribution, but holded symmetry assumption<br>
@@ -24,7 +24,7 @@
   • Conducted T test just to see if it showed the same result with Wilcox Test, and the result of T test also showed the same result with Wilcox test  with p-value of 3.749e-10
 </p>
 <p>
-  2. Difference of Meat Consumption between 2019 and 2023 by Countries<br>
+  2. Difference of Meat Consumption between 2019 and 2022 by Countries<br>
   • In this approach, the dataset consists of countries, average meat consumption of 2019, average meat consumption of 2022, and average difference of meat consumption between 2019 and 2022<br>
   • Conducted Friedman's test to see the difference of meat consumption by countries since year is considered as a block in the dataset<br>
   • As the result of Friedman's test, rejected the null hypothesis with p-value of 0.003286, which means that there are at least two countries having a statistically  significant difference among 39 countries<br>
@@ -36,7 +36,7 @@
 </p>
 <span class="image main"><img src="Portfolio_Methodology2_1.jpg" style="	width:50%; margin-bottom: 50px;"/></span>
 <p>
-  3. Difference of Meat Consumption between 2019 and 2023 by Type of Meats<br>
+  3. Difference of Meat Consumption between 2019 and 2022 by Type of Meats<br>
   • In this approach, the dataset consists of countries, difference of beef consumption between 2019 and 2022, difference of pig consumption, difference of poultry consumption, and difference of sheep consumption<br>
   • Conducted Friedman's test to see the difference of meat consumption by type of meats between 2019 and 2022 and rejected the null hypothesis with p-value of 2.2e-16<br>
   • Conducted the Kruskal-Wallis test to see if the relationship between the difference of meat consumption and type of meats holds the independent assumption well or not<br>
