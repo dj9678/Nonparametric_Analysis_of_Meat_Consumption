@@ -16,7 +16,7 @@
 <h2>Analysis</h2>
 <p>
   1. Difference of Meat Consumption between 2019 and 2022 Overall<br>
-  • In this approach, the dataset consists of meat consumption of 2019 and meat consumption of 2022<br>
+	• In this approach, the dataset consists of meat consumption of 2019, meat consumption of 2022, and difference of meat consumption between 2019 and 2022<br>
   • Conducted the Kolmogorov-Smirnov test to see if the difference of meat consumption fit to normal distribution<br>
   • The difference of meat consumption did not hold normal distribution, but holded symmetry assumption<br>
   • Conducted the Wilcox Signed Rank test to see if there are statistically difference in meat consumption between 2019 and 2022<br>
